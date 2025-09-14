@@ -1,0 +1,17 @@
+name: OneLife
+main: com.onelife.OneLifePlugin
+version: 0.1.0
+api-version: "1.21"
+depend: [LuckPerms]
+author: Gianluca Minoprio
+
+commands:
+  verify:
+    description: Show the OneLife verification QR again
+    usage: /verify
+    permission: onelife.verify
+
+permissions:
+  onelife.verify:
+    description: Allow players to open the OneLife QR prompt
+    default: true

@@ -1,0 +1,28 @@
+# Configuration file for OneLife project
+# Copy this to config.yml and fill in your actual values
+
+# Backend server configuration
+server:
+  port: 3000
+  host: "localhost"
+
+# Ngrok configuration for tunneling
+ngrok:
+  url: "https://your-ngrok-url.ngrok.io"
+  auth_token: "your_ngrok_auth_token_here"
+
+# JWT configuration
+jwt:
+  secret: "your_jwt_secret_key_here"
+  expires_in: "24h"
+
+# Self protocol configuration
+self:
+  app_id: "your_self_app_id"
+  private_key: "your_self_private_key"
+
+# Minecraft server configuration
+minecraft:
+  server_port: 25565
+  rcon_port: 25575
+  rcon_password: "your_rcon_password"

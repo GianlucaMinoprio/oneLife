@@ -143,3 +143,16 @@ vite.config.ts.timestamp-*
 *.sqlite3
 *.sqlite-shm
 *.sqlite-wal
+
+# Minecraft server files
+minecraft-server/
+
+# Configuration files with secrets
+config.yml
+*.config.yml
+
+# Gradle builds and state (avoid publishing large binaries)
+**/.gradle/
+**/build/
+oneLife-plugin/build/
+oneLife-plugin/.gradle/
