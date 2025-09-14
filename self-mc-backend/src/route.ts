@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
-import { Store } from "./store";
-import { deriveNullifier } from "./self";
+import { Store } from "./store.js";
+import { deriveNullifier } from "./self.js";
 import {
   SelfBackendVerifier,
   DefaultConfigStore,
@@ -11,7 +11,7 @@ import {
 } from "@selfxyz/core";
 import QRCode from "qrcode";
 import { nanoid } from "nanoid";
-import { signLoginToken } from "./crypto";
+import { signLoginToken } from "./crypto.js";
 import type { SelfApp, EndpointType } from "@selfxyz/common";
 
 const r = Router();
