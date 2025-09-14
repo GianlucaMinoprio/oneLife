@@ -12,17 +12,25 @@ import {
 import QRCode from "qrcode";
 import { nanoid } from "nanoid";
 import { signLoginToken } from "./crypto";
-import type { SelfApp } from "@selfxyz/common";
+import type { SelfApp, EndpointType } from "@selfxyz/common";
 
 const r = Router();
 
-// Initialize Self verifier
-const SCOPE = "minecraft-poh";
-const VERIFY_URL = "https://daimo.ngrok.app/self/verify";
-const IS_PROD = true;
-const ENDPOINT_TYPE = "https";
-const CHAIN_ID = 42220;
-const MOCK = false;
+// Initialize Self verifier (env-configurable)
+const SCOPE = process.env.SELF_SCOPE || "minecraft-poh";
+const VERIFY_URL =
+  process.env.SELF_VERIFY_URL || "http://localhost:8080/self/verify";
+const IS_PROD =
+  String(process.env.SELF_IS_PROD || "true").toLowerCase() === "true";
+const ENDPOINT_TYPE = (
+  (process.env.SELF_ENDPOINT_TYPE || "https").toLowerCase() === "http"
+    ? "http"
+    : "https"
+) as EndpointType;
+const CHAIN_ID = (
+  Number(process.env.SELF_CHAIN_ID || 42220) === 44787 ? 44787 : 42220
+) as 42220 | 44787;
+const MOCK = String(process.env.SELF_MOCK || "false").toLowerCase() === "true";
 
 const configStore = new DefaultConfigStore({
   excludedCountries: [],

@@ -1,16 +1,21 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import routes from "./route";
 
-dotenv.config();
 const app = express();
-app.use(cors({ origin: true }));
+app.set("trust proxy", true);
+const corsOrigin =
+  process.env.CORS_ORIGIN === "*" || !process.env.CORS_ORIGIN
+    ? true
+    : process.env.CORS_ORIGIN.split(",").map((s) => s.trim());
+app.use(cors({ origin: corsOrigin }));
 
 // Use JSON body parser for all routes except the webhook, which needs raw body
 app.use((req, res, next) => {
   if (req.path === "/self/webhook") return next();
-  return (express.json({ limit: "1mb" }) as any)(req, res, next);
+  const limit = process.env.JSON_LIMIT || "1mb";
+  return (express.json({ limit }) as any)(req, res, next);
 });
 
 app.get("/health", (_req, res) => res.json({ ok: true }));

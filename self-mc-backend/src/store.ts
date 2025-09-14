@@ -13,7 +13,8 @@ export interface Binding {
   session_expires_at: number | null;
 }
 
-const db = new Database("data.sqlite");
+const dbPath = process.env.SQLITE_PATH || "data.sqlite";
+const db = new Database(dbPath);
 db.pragma("journal_mode = WAL");
 db.exec(`
 CREATE TABLE IF NOT EXISTS bindings (

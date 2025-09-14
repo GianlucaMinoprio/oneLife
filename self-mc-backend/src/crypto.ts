@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 
-const APP_SECRET = process.env.APP_SECRET || "dev_secret";
+const APP_SECRET =
+  process.env.JWT_SECRET || process.env.APP_SECRET || "dev_secret";
 
 export function signLoginToken(data: {
   mc_uuid: string;
