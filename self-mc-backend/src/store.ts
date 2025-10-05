@@ -15,7 +15,9 @@ export interface Binding {
   session_expires_at: number | null;
 }
 
-const dbPath = process.env.SQLITE_PATH || "data.sqlite";
+const dbPath =
+  process.env.SQLITE_PATH ||
+  (process.env.RAILWAY_ENVIRONMENT ? "/data/data.sqlite" : "data.sqlite");
 const dir = path.dirname(dbPath);
 if (dir && dir !== "." && !fs.existsSync(dir)) {
   fs.mkdirSync(dir, { recursive: true });
