@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -33,12 +34,43 @@ public class Restrictor implements Listener {
     private final Map<UUID, BukkitTask> lookTasks = new ConcurrentHashMap<>();
     private final Map<UUID, BossBar> bossBars = new ConcurrentHashMap<>();
 
+    // Store inventories for existing players during verification
+    private final Map<UUID, SavedInventory> savedInventories = new ConcurrentHashMap<>();
+
+    private static class SavedInventory {
+        ItemStack[] contents;
+        ItemStack[] armorContents;
+        ItemStack offHand;
+        int heldItemSlot;
+
+        SavedInventory(Player p) {
+            this.contents = p.getInventory().getContents().clone();
+            this.armorContents = p.getInventory().getArmorContents().clone();
+            this.offHand = p.getInventory().getItemInOffHand();
+            this.heldItemSlot = p.getInventory().getHeldItemSlot();
+        }
+
+        void restore(Player p) {
+            p.getInventory().setContents(contents);
+            p.getInventory().setArmorContents(armorContents);
+            p.getInventory().setItemInOffHand(offHand);
+            p.getInventory().setHeldItemSlot(heldItemSlot);
+        }
+    }
+
     public Restrictor(org.bukkit.plugin.Plugin plugin) {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void apply(Player p) {
+        // For existing players, save their inventory before restricting
+        // This prevents data loss if backend database gets reset
+        if (p.hasPlayedBefore()) {
+            savedInventories.put(p.getUniqueId(), new SavedInventory(p));
+            plugin.getLogger().info("OneLife: Saved inventory for existing player uuid=" + p.getUniqueId());
+        }
+
         // Start from a clean slate
         p.getActivePotionEffects().forEach(pe -> p.removePotionEffect(pe.getType()));
         p.getInventory().clear();
@@ -98,6 +130,13 @@ public class Restrictor implements Listener {
     }
 
     public void clear(Player p) {
+        // Restore saved inventory for existing players
+        SavedInventory saved = savedInventories.remove(p.getUniqueId());
+        if (saved != null) {
+            saved.restore(p);
+            plugin.getLogger().info("OneLife: Restored inventory for existing player uuid=" + p.getUniqueId());
+        }
+
         p.setGameMode(GameMode.SURVIVAL);
         p.setInvulnerable(false);
         p.setCollidable(true);
