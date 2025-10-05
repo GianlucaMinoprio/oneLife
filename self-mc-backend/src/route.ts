@@ -18,8 +18,7 @@ const r = Router();
 
 // Initialize Self verifier (env-configurable)
 const SCOPE = process.env.SELF_SCOPE || "minecraft-poh";
-const VERIFY_URL =
-  process.env.SELF_VERIFY_URL || "http://localhost:8080/self/verify";
+const VERIFY_URL = process.env.SELF_ENDPOINT + "/self/verify";
 const IS_PROD =
   String(process.env.SELF_IS_PROD || "true").toLowerCase() === "true";
 const ENDPOINT_TYPE = (
